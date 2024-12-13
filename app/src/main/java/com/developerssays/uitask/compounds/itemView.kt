@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.developerssays.uitask.R
 import com.developerssays.uitask.model.BurgerItem
 import com.developerssays.uitask.model.CoffeeItem
@@ -46,21 +47,18 @@ import com.developerssays.uitask.model.SaladItem
 
 @Composable
 fun MenuItemCard(item: MenuItem,
-                 onAddClicked: (MenuItem) -> Unit,) {
-    var count by remember { mutableStateOf(0) }
-
+                 onAddClicked: (MenuItem) -> Unit,
+                // navController: NavHostController
+                 ) {
         // Display the Menu Item Card
         Card(
-            modifier = Modifier
-                .size(180.dp)
-                .padding(5.dp).clickable { onAddClicked.invoke(item) },
+            modifier = Modifier.size(180.dp).padding(5.dp).clickable {
+                onAddClicked.invoke(item) },
             elevation = CardDefaults.elevatedCardElevation(10.dp),
             colors = CardDefaults.cardColors(Color.White)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
+                modifier = Modifier.fillMaxWidth().padding(5.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -68,8 +66,7 @@ fun MenuItemCard(item: MenuItem,
                 Image(
                     painter = painterResource(id = item.image), // Dynamic item image
                     contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
+                    modifier = Modifier.size(100.dp)
                         .clip(RoundedCornerShape(10.dp)),
                     contentScale = ContentScale.FillBounds
                 )
@@ -84,14 +81,12 @@ fun MenuItemCard(item: MenuItem,
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
-
                 // Display item description
                 Text(
                     text = item.description,
                     fontSize = 12.sp,
                     style = MaterialTheme.typography.bodySmall
                 )
-
                 // Display item price
                 Text(
                     text = "₹${item.price}",

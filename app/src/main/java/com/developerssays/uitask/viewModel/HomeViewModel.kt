@@ -1,8 +1,11 @@
 package com.developerssays.uitask.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.createSavedStateHandle
 import com.developerssays.uitask.R
 import com.developerssays.uitask.model.BurgerItem
 import com.developerssays.uitask.model.CartItem
@@ -16,18 +19,22 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 
-class HomeViewModel : ViewModel(){
+class HomeViewModel( ) : ViewModel(){
 
     // Selected category
     private var _selectedItemCategory= mutableStateOf("Lunch") // Default selection
     val selectedItemCategory: State<String> = _selectedItemCategory
 
         // Lists of items for different categories
-        val itemOptionsCategories = listOf("Lunch", "Salad", "Burger", "Coffee", "Dessert")
+      val itemOptionsCategories = listOf("Lunch", "Salad", "Burger", "Coffee", "Dessert")
 
     // Cart data
-   private val _cartItems = MutableStateFlow<Map<Long,CartItem>>(emptyMap()) // Key: Item ID, Value: CartItem
-    val cartItems: StateFlow<Map<Long, CartItem>> = _cartItems
+    private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
+    val cartItems: StateFlow<List<CartItem>> = _cartItems
+
+
+
+
 
     val lunchItemList = listOf(
         LunchItem(id = 1, name = "Pova", description = "Good food", price = 60.00, image = R.drawable.lunch),
@@ -93,25 +100,72 @@ class HomeViewModel : ViewModel(){
         _selectedItemCategory.value = category
     }
 
+
+
+
     // Add item to cart
     fun addItemToCart(item: MenuItem){
-        val currentCartItems = _cartItems.value.toMutableMap()
-        val existingCartItem = currentCartItems[item.id]
+        val currentCartItems = _cartItems.value.toMutableList()
+        val existingCartItem = currentCartItems.find { it.item.id==item.id }
         if (existingCartItem!=null){
             existingCartItem.increaseQuantity()
         }else{
-            currentCartItems[item.id] = CartItem(item,1)
+            currentCartItems.add(CartItem(item, 1))
+        }
+        _cartItems.value = currentCartItems
+     //   saveCartItems(currentCartItems, savedStateHandle)
+        Log.d("item","inside fun ${_cartItems.value}")
+    }
+
+
+
+    private fun getSavedCartItems(savedStateHandle: SavedStateHandle): List<CartItem> {
+        return savedStateHandle.get<List<CartItem>>("cartItems") ?: emptyList()
+    }
+
+    private fun saveCartItems(cartItems: List<CartItem>, savedStateHandle: SavedStateHandle) {
+        savedStateHandle.set("cartItems", cartItems)
+    }
+
+    fun getMenuItemById(itemId: Long): MenuItem? {
+        // Check all categories for the item with the given ID
+        return lunchItemList.find { it.id == itemId }
+            ?: saladItemList.find { it.id == itemId }
+            ?: burgerItemList.find { it.id == itemId }
+            ?: coffeeItemList.find { it.id == itemId }
+            ?: dessertItemList.find { it.id == itemId }
+    }
+
+
+    /*
+     fun getItemsForCategory(category: String): List<MenuItem> {
+        return when (category) {
+            "Lunch" -> lunchItemList
+            "Salad" -> saladItemList
+            "Burger" -> burgerItemList
+            "Coffee" -> coffeeItemList
+            "Dessert" -> dessertItemList
+            else -> emptyList()
         }
     }
+     */
+
+
 
     //remove item in cart
     fun removeItemFromCart(item: MenuItem) {
-        val currentCartItems = _cartItems.value.toMutableMap()
-        val existingCartItem = currentCartItems[item.id]
-        if (existingCartItem != null) {
-            existingCartItem.quantity == 0
-            currentCartItems.remove(item.id)
+        val currentCartItems = _cartItems.value.toMutableList()
+        val existingCartItem = currentCartItems.find { it.item.id==item.id }
+        if (existingCartItem != null && existingCartItem.quantity > 1) {
+            existingCartItem.decreaseQuantity()
+        }else{
+            currentCartItems.remove(existingCartItem)
         }
         _cartItems.value = currentCartItems
+    }
+
+    fun getTotalCartItemCount(): Int {
+        return _cartItems.value.sumOf { it.quantity }
+        //return _cartItems.value.size
     }
 }

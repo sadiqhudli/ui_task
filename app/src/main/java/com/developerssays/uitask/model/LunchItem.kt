@@ -1,6 +1,7 @@
 package com.developerssays.uitask.model
 
-import androidx.compose.ui.graphics.painter.Painter
+import android.os.Parcelable
+import java.io.Serializable
 
 
 sealed class MenuItem {
@@ -54,10 +55,11 @@ data class DessertItem(
 ):MenuItem()
 
 
+
 data class CartItem(
     val item:MenuItem,
     var quantity: Int
-){
+)  {
     val totalPrice: Double
         get() = item.price * quantity
 

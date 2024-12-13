@@ -34,8 +34,7 @@ fun CustomChips(itemName: String,
     )
 {
     Card(
-        modifier = Modifier.size(130.dp).padding(5.dp).clickable {
-            onClicked.invoke() },
+        modifier = Modifier.size(130.dp).padding(5.dp).clickable { onClicked.invoke() },
         elevation = CardDefaults.elevatedCardElevation(10.dp),
         colors = CardDefaults.cardColors(Color.White)
     )
@@ -47,11 +46,12 @@ fun CustomChips(itemName: String,
         )
         {
             Image(
-                painter = painterResource(id = R.drawable.lunch_icon),
+                painter = painterResource(id =R.drawable.lunch_icon ),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(shape = RoundedCornerShape(10.dp)), contentScale = ContentScale.FillBounds
+                    .size(50.dp)
+                    .clip(shape = RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.height(5.dp))
 

@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppbar(onClicked: () -> Unit) {
-    TopAppBar(title = { Text(text = "pos System ") },
+fun MyAppbar(onClicked: () -> Unit,
+             title: String) {
+    TopAppBar(
+        title = { Text(text = title) },
         navigationIcon = {
             IconButton(onClick = { onClicked.invoke() })
             {
