@@ -3,9 +3,7 @@ package com.developerssays.uitask.viewModel
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.createSavedStateHandle
 import com.developerssays.uitask.R
 import com.developerssays.uitask.model.BurgerItem
 import com.developerssays.uitask.model.CartItem
@@ -33,6 +31,16 @@ class HomeViewModel( ) : ViewModel(){
     val cartItems: StateFlow<List<CartItem>> = _cartItems
 
 
+
+    private  var _tax = MutableStateFlow<Int>(0)
+    var tax: StateFlow<Int> = _tax
+
+    private  var _subTotal = MutableStateFlow<Double>(0.0)
+    var subTotal: StateFlow<Double> = _subTotal
+
+
+    private  var _discount = MutableStateFlow<Int>(0)
+    var discount: StateFlow<Int> = _discount
 
 
 
@@ -100,9 +108,6 @@ class HomeViewModel( ) : ViewModel(){
         _selectedItemCategory.value = category
     }
 
-
-
-
     // Add item to cart
     fun addItemToCart(item: MenuItem){
         val currentCartItems = _cartItems.value.toMutableList()
@@ -113,18 +118,7 @@ class HomeViewModel( ) : ViewModel(){
             currentCartItems.add(CartItem(item, 1))
         }
         _cartItems.value = currentCartItems
-     //   saveCartItems(currentCartItems, savedStateHandle)
-        Log.d("item","inside fun ${_cartItems.value}")
-    }
-
-
-
-    private fun getSavedCartItems(savedStateHandle: SavedStateHandle): List<CartItem> {
-        return savedStateHandle.get<List<CartItem>>("cartItems") ?: emptyList()
-    }
-
-    private fun saveCartItems(cartItems: List<CartItem>, savedStateHandle: SavedStateHandle) {
-        savedStateHandle.set("cartItems", cartItems)
+        updateCartSummary()
     }
 
     fun getMenuItemById(itemId: Long): MenuItem? {
@@ -135,7 +129,6 @@ class HomeViewModel( ) : ViewModel(){
             ?: coffeeItemList.find { it.id == itemId }
             ?: dessertItemList.find { it.id == itemId }
     }
-
 
     /*
      fun getItemsForCategory(category: String): List<MenuItem> {
@@ -150,8 +143,6 @@ class HomeViewModel( ) : ViewModel(){
     }
      */
 
-
-
     //remove item in cart
     fun removeItemFromCart(item: MenuItem) {
         val currentCartItems = _cartItems.value.toMutableList()
@@ -162,10 +153,43 @@ class HomeViewModel( ) : ViewModel(){
             currentCartItems.remove(existingCartItem)
         }
         _cartItems.value = currentCartItems
+        updateCartSummary()
     }
 
-    fun getTotalCartItemCount(): Int {
-        return _cartItems.value.sumOf { it.quantity }
-        //return _cartItems.value.size
+    fun getTotalCartItemPrice(): Double {
+        val totalPrice = _cartItems.value.sumOf { it.totalPrice }
+        _subTotal.value = totalPrice
+        return totalPrice
     }
+
+    fun calculateDiscount(subTotal: Double){
+        val discountPercentage =10
+        val discountAmount = (subTotal*discountPercentage/100).toInt()
+        _discount.value = discountAmount
+       // return discountAmount.toDouble()
+    }
+
+    fun getTotalAmountAfterDiscountAndTax(): Double {
+        val discountAmount = _discount.value
+        val taxAmount = _tax.value
+        val totalAmount = (_subTotal.value - discountAmount) + taxAmount
+        return totalAmount
+    }
+    init {
+        updateCartSummary()
+    }
+
+
+    fun updateCartSummary() {
+        val calculatedSubTotal = _cartItems.value.sumOf { it.totalPrice }
+        _subTotal.value = calculatedSubTotal
+        // Recalculate the discount based on the new subtotal
+        calculateDiscount(calculatedSubTotal)
+        // Calculate tax (assuming 12% tax rate)
+        _tax.value = (calculatedSubTotal * 0.12).toInt()
+
+    }
+
+
+
 }

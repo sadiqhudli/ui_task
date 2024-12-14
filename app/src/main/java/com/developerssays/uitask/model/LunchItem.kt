@@ -64,11 +64,12 @@ data class CartItem(
         get() = item.price * quantity
 
     fun increaseQuantity() {
-        quantity++
+        quantity += 1
     }
 
     fun decreaseQuantity() {
-        if (quantity > 1) quantity-- // To prevent going below 1
+        if (quantity > 1)
+            quantity -= 1 // To prevent going below 1
     }
 }
 

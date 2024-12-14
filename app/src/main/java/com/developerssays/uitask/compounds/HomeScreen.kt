@@ -23,72 +23,73 @@ import com.developerssays.uitask.viewModel.HomeViewModel
 fun HomeScreen(
     innerPadding: PaddingValues,
     navController: NavHostController,
-    viewModel: HomeViewModel
-)
-{
+    viewModel: HomeViewModel,
+) {
 
-
-
-   // val viewModel: HomeViewModel = viewModel()
     val selectedItemCategory by viewModel.selectedItemCategory
     val itemOptionsCategories = viewModel.itemOptionsCategories
-    val totalItemsInCart = viewModel.getTotalCartItemCount()
     val context = LocalContext.current
 
-    Log.d("it","$totalItemsInCart")
-
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        topBar = { MyAppbar(title = navController.currentDestination!!.route.toString(),onClicked = {
-                    navController.navigate("CheckListScreen") } ) },
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        MyAppbar(title = navController.currentDestination!!.route.toString(), onClicked = {
+            navController.navigate("CheckListScreen")
+        })
+    },
 
         content = { paddingValues ->
-            Column (modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues = paddingValues))
-        {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = paddingValues)
+            ) {
                 Spacer(modifier = Modifier.height(20.dp))
-            LazyRow(modifier = Modifier
-                .fillMaxWidth(), contentPadding = PaddingValues(10.dp))
-            {
-                items(itemOptionsCategories.size){index->
-                    val itemName = itemOptionsCategories[index]
-                    CustomChips(itemName =itemName,
-                        onClicked = { viewModel.updateSelectedCategory(itemName)    }   )
-                }
-            }
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .weight(1f))
-            {
-                Text(text = selectedItemCategory.toString(), fontSize = 22.sp)
-              //  val itemsForSelectedCategory=
-                LazyVerticalGrid(columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(10.dp))
-                {
-                    when(selectedItemCategory){
-                        "Lunch" -> items(viewModel.lunchItemList) { item ->
-                            MenuItemCard(item, onAddClicked = {viewModel.addItemToCart(item)})
-                        }
-                        "Salad" -> items(viewModel.saladItemList) { item ->
-                            MenuItemCard(item, onAddClicked = {viewModel.addItemToCart(item)})
-                        }
-                        "Burger" -> items(viewModel.burgerItemList) { item ->
-                            MenuItemCard(item, onAddClicked = {viewModel.addItemToCart(item)})
-                        }
-                        "Coffee" -> items(viewModel.coffeeItemList) { item ->
-                            MenuItemCard(item, onAddClicked = {viewModel.addItemToCart(item)})
-                        }
-                        "Dessert" -> items(viewModel.dessertItemList) { item ->
-                            MenuItemCard(item, onAddClicked = {viewModel.addItemToCart(item)})
-
-                        }
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(10.dp)
+                ) {
+                    items(itemOptionsCategories.size) { index ->
+                        val itemName = itemOptionsCategories[index]
+                        CustomChips(itemName = itemName,
+                            onClicked = { viewModel.updateSelectedCategory(itemName) })
                     }
-                    
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .weight(1f)
+                ) {
+                    Text(text = selectedItemCategory.toString(), fontSize = 22.sp)
+                    //  val itemsForSelectedCategory=
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2), contentPadding = PaddingValues(10.dp)
+                    ) {
+                        when (selectedItemCategory) {
+                            "Lunch" -> items(viewModel.lunchItemList) { item ->
+                                MenuItemCard(item, onAddClicked = { viewModel.addItemToCart(item) })
+                            }
+
+                            "Salad" -> items(viewModel.saladItemList) { item ->
+                                MenuItemCard(item, onAddClicked = { viewModel.addItemToCart(item) })
+                            }
+
+                            "Burger" -> items(viewModel.burgerItemList) { item ->
+                                MenuItemCard(item, onAddClicked = { viewModel.addItemToCart(item) })
+                            }
+
+                            "Coffee" -> items(viewModel.coffeeItemList) { item ->
+                                MenuItemCard(item, onAddClicked = { viewModel.addItemToCart(item) })
+                            }
+
+                            "Dessert" -> items(viewModel.dessertItemList) { item ->
+                                MenuItemCard(item, onAddClicked = { viewModel.addItemToCart(item) })
+
+                            }
+                        }
+
+                    }
                 }
             }
-        }}
-    )
+        })
 
 }
 
@@ -100,9 +101,8 @@ fun HomePre() {
 }
 
 
-
 @Preview(showBackground = false)
 @Composable
 fun HomePreLight() {
-   // HomeScreen(innerPadding = PaddingValues())
+    // HomeScreen(innerPadding = PaddingValues())
 }

@@ -22,15 +22,15 @@ fun AppNavigation(
     ) {
         composable(route = "home") {
 
-            HomeScreen(innerPadding = innerPadding, navController,viewModel)
+            HomeScreen(innerPadding = innerPadding, navController, viewModel)
         }
 
-
         composable(
-            "CheckListScreen") {
-          //  val viewModel: HomeViewModel = viewModel()
+            "CheckListScreen"
+        ) {
             CheckListScreen(
-                navController, viewModel )
+                navController, viewModel
+            )
         }
 
     }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Minimize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,54 +36,67 @@ import com.developerssays.uitask.model.CartItem
 fun CartItemView(
     item: CartItem,
     onClikedIncrese: () -> Unit,
-    onClikedDecrese:()->Unit
+    onClikedDecrese: () -> Unit,
 
-){
+    ) {
 
-    Row (modifier = Modifier
-        .fillMaxWidth()
-        .padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center)
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    )
     {
-        // item icon
-        Image(painter = painterResource(id = item.item.image),
-            contentDescription ="item images",
+        Image(
+            painter = painterResource(id = item.item.image),
+            contentDescription = "item images",
             modifier = Modifier
                 .size(40.dp)
                 .clip(shape = CircleShape),
-            contentScale = ContentScale.FillBounds )
-        Spacer(modifier = Modifier.width(15.dp))
+            contentScale = ContentScale.FillBounds
+        )
+        Spacer(modifier = Modifier.width(10.dp))
 
-        //itam name
-        Text(text = "${item.item.name}", fontSize = 12.sp,
-            style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.width(5.dp))
 
-        IconButton(onClick = {onClikedIncrese()
+        Text(
+            text = item.item.name, fontSize = 12.sp,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.width(10.dp))
 
-        })
-        {
-            Icon(Icons.Default.Add,
-                "add button  ",
-                tint = Color.Black,
-                modifier = Modifier.size(30.dp))
+        Button(onClick = {
+            onClikedIncrese()
         }
-        Spacer(modifier = Modifier.width(5.dp))
-        Text(text = "${item.quantity}", fontSize = 12.sp,
-            style = MaterialTheme.typography.bodyMedium)
-
-        IconButton(onClick = {onClikedDecrese.invoke()
-              }   )
+        )
         {
-            Icon(
-                Icons.Default.Minimize,
-                "minues button ", tint = Color.Black,
-                modifier = Modifier.size(30.dp)
+            Text(
+                text = " + ", fontSize = 18.sp,
+                style = MaterialTheme.typography.bodyMedium
             )
-
         }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Text(
+            text = "${item.quantity}", fontSize = 12.sp,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+
+
+        Button(onClick = { onClikedDecrese() })
+        {
+            Text(
+                text = " - ", fontSize = 18.sp,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Spacer(modifier = Modifier.width(5.dp))
         // item total price
-        Text(text = "${item.totalPrice}", fontSize = 12.sp,
-            style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = item.item.price.toString(), fontSize = 12.sp,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.width(5.dp))
     }
 
 }
